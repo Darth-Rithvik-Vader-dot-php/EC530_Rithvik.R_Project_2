@@ -7,7 +7,7 @@ from datetime import datetime
 import json
 
 app = Flask(__name__)
-app.config["MONGO_URI"] = "mongodb+srv://visaaln2:visaal456@ec530.qevqtrc.mongodb.net/healthmonitoring?retryWrites=true&w=majority"
+app.config["MONGO_URI"] = "mongodb+srv://rithvikr88:rithvikr@ec530.qevqtrc.mongodb.net/healthmonitoring?retryWrites=true&w=majority"
 mongo = PyMongo(app)
 
 # Helper to parse ObjectId and datetime to string
@@ -18,7 +18,7 @@ def custom_json_encoder(data):
         return data.isoformat()
     raise TypeError(f"Type {type(data)} not serializable")
 
-# Helper to jsonify with custom encoder
+# jsonify using Helper for custom encoder
 def jsonify_custom(data):
     return json.loads(json.dumps(data, default=custom_json_encoder))
 
@@ -50,7 +50,6 @@ def get_patient_alerts(patientId):
 def create_patient_alert(patientId):
     data = request.json
     data['patientId'] = ObjectId(patientId)
-    # Assume dateTime or other relevant fields are included in your alert data
     mongo.db.patientAlerts.insert_one(data)
     return jsonify({'message': 'Alert created successfully'}), 201
 
