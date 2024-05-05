@@ -1,17 +1,17 @@
 from flask import Flask, request, jsonify
 from flask_pymongo import PyMongo
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask_cors import CORS  # Import CORS
+from flask_cors import CORS
 from datetime import datetime, timezone
 
 
 app = Flask(__name__)
-CORS(app)  # Enable CORS for all routes
+CORS(app)
+# Enabling CORS for all routes
 
 
-# Configure MongoDB Atlas connection
-# Ensure to replace <username>, <password>, and cluster0.xxxxx with your actual MongoDB Atlas details
-app.config["MONGO_URI"] = "mongodb+srv://visaaln2:visaal456@ec530.qevqtrc.mongodb.net/healthmonitoring?retryWrites=true&w=majority"
+# Configuring MongoDB Atlas connection
+app.config["MONGO_URI"] = "mongodb+srv://rithvikr88:rithvikr@ec530.qevqtrc.mongodb.net/healthmonitoring?retryWrites=true&w=majority"
 mongo = PyMongo(app)
 
 
@@ -19,11 +19,11 @@ mongo = PyMongo(app)
 @app.route('/register', methods=['POST'])
 def register():
     data = request.json
-    # Check for the presence of required fields in the input data
+    # Checking for the presence of required fields in the input data
     if not all(key in data for key in ['username', 'email', 'password', 'role', 'firstName', 'lastName', 'dateOfBirth']):
         return jsonify({'message': 'Missing required user information'}), 400
 
-    # Check if the user already exists in either the authentication or users collection
+    # Checking if the user already exists in either the authentication or users collection
     authentication_collection = mongo.db.authentication
     users_collection = mongo.db.users
     existing_user_auth = authentication_collection.find_one({'username': data['username']})
@@ -32,18 +32,18 @@ def register():
     if existing_user_auth or existing_user_users:
         return jsonify({'message': 'User already exists'}), 409
 
-    # Hash the user's password for secure storage
+    # Hashing the user's password for secure storage
     hashed_password = generate_password_hash(data['password'])
     date_of_birth = datetime.strptime(data['dateOfBirth'], '%Y-%m-%d')
 
-    # Create and insert the user document into the users collection
+    # Creating and inserting the user document into the users collection
     user_doc = {
         "personalInfo": {
             "firstName": data['firstName'],
             "lastName": data['lastName'],
             "email": data['email'],
             "dateOfBirth": date_of_birth,
-            # Include other relevant personal information here
+            # Including other relevant personal information here
         },
         "roles": [data['role']],
         "status": "active",
@@ -51,7 +51,7 @@ def register():
     }
     user_id = users_collection.insert_one(user_doc).inserted_id
 
-    # Create and insert the authentication document into the authentication collection
+    # Creating and insert the authentication document into the authentication collection
     auth_doc = {
         "username": data['username'],
         "password": hashed_password,
