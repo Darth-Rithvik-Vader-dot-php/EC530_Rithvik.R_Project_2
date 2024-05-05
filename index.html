@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Monitoring App Login</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="login-container">
+        <h2>Login to Your Account</h2>
+        <form>
+            <div class="input-group">
+                <input type="text" id="username" required>
+                <label for="username"> Username </label>
+            </div>
+            <div class="input-group">
+                <input type="password" id="password" required>
+                <label for="password">Password</label>
+            </div>
+            <div class="forgot-password">
+                <a href="#">Forgot Password?</a>
+            </div>
+            <button type="submit">Login</button>
+        </form>
+        <p id="error-message" style="display: none;">Invalid username or password</p>
+    </div>
+</body>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const loginForm = document.querySelector('form');
+    
+        loginForm.addEventListener('submit', function (e) {
+            e.preventDefault(); // Prevent the default form submission
+    
+            // Extract the values from the input fields
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+    
+            // Prepare the data to be sent in the POST request
+            const postData = {
+                username: username,
+                password: password,
+            };
+            
+            fetch('http://localhost:5000/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json', // This line is crucial
+                },
+                body: JSON.stringify(postData), // Corrected line
+            })
+            .then(response => {
+                // When using 'no-cors', response.type will be 'opaque' and response.json() will not be available
+                if (response.ok) {
+                    console.log('Success');
+                    // Handle success
+                } else {
+                    console.error('Server returned error response');
+                    document.getElementById('error-message').style.display = 'block'; // Show error message
+                    // Add 'error' class to input groups to change their appearance
+                    document.querySelectorAll('.input-group').forEach(function(group) {
+                        group.classList.add('error');
+                    });
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+
+            });
+            
+
+        });
+    });
+    
+</script>
+
+</html>

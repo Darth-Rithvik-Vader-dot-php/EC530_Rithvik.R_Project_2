@@ -1,0 +1,95 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f0f2f5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.login-container {
+    background-color: #fff;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.login-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.input-group {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+    font-size: 16px;
+}
+
+.input-group input:focus {
+    border-color: #007bff;
+}
+
+.input-group input:focus + label,
+.input-group input:valid + label {
+    padding-left: 5px; /* Add space to the left */
+    padding-right: 5px;
+    top: -5px;
+    left: 5px;
+    font-size: 12px;
+    color: #007bff;
+}
+
+.input-group label {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: #fff;
+    transition: all 0.3s ease;
+    pointer-events: none;
+    font-size: 16px;
+    color: #999;
+}
+
+.forgot-password {
+    text-align: right;
+    margin-bottom: 20px;
+}
+
+.forgot-password a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    background-color: #007bff;
+    color: #fff;
+    font-size: 18px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+.input-group.error input {
+    border-color: red; /* Change input border to red */
+}
+
+#error-message {
+    color: red; /* Error message text color */
+    text-align: center; /* Center align the error message */
+    margin-top: 10px; /* Spacing above the error message */
+}
