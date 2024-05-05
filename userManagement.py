@@ -4,10 +4,9 @@ from bson import ObjectId
 from bson.errors import InvalidId
 
 app = Flask(__name__)
-app.config["MONGO_URI"] = "mongodb+srv://visaaln2:visaal456@ec530.qevqtrc.mongodb.net/healthmonitoring?retryWrites=true&w=majority"
+app.config["MONGO_URI"] = "mongodb+srv://rithvikr88:rithvikr@ec530.qevqtrc.mongodb.net/healthmonitoring?retryWrites=true&w=majority"
 mongo = PyMongo(app)
 
-# Helper to parse ObjectId to string
 def parse_json(data):
     if "_id" in data:
         data["_id"] = str(data["_id"])
@@ -18,7 +17,6 @@ def add_user():
     data = request.json
     if not data or not data.get('username'):
         return jsonify({'error': 'Missing user data'}), 400
-    # Add additional validation as necessary
     user_id = mongo.db.users.insert_one(data).inserted_id
     return jsonify({'message': 'User added', 'user_id': str(user_id)}), 201
 
@@ -45,16 +43,10 @@ def update_user(userId):
 @app.route('/admin/users/<userId>', methods=['DELETE'])
 def delete_user(userId):
     try:
-        # Convert userId from string to ObjectId for MongoDB operation
         userObjectId = ObjectId(userId)
     except InvalidId:
         return jsonify({'error': 'Invalid user ID'}), 400
-
-    # Delete user from 'users' collection
     result_users = mongo.db.users.delete_one({'_id': userObjectId})
-    
-    # Delete user from 'authentication' collection
-    # Assuming 'userId' field in 'authentication' collection is storing ObjectId reference to 'users' collection
     result_auth = mongo.db.authentication.delete_one({'userId': userObjectId})
 
     if result_users.deleted_count and result_auth.deleted_count:
@@ -80,8 +72,6 @@ def assign_roles(userId):
     except InvalidId:
         return jsonify({'error': 'Invalid user ID'}), 400
 
-
-
 @app.route('/admin/users/<userId>/roles', methods=['DELETE'])
 def remove_role(userId):
     data = request.json
@@ -97,18 +87,14 @@ def remove_role(userId):
         userObjectId = ObjectId(userId)
     except InvalidId:
         return jsonify({'error': 'Invalid user ID'}), 400
-
-    # Remove the specified roles
     result = mongo.db.users.update_one(
         {'_id': userObjectId},
         {'$pullAll': {'roles': roles_to_remove}}
     )
 
     if result.modified_count:
-        # Check if the user has any roles left
         user = mongo.db.users.find_one({'_id': userObjectId}, {'roles': 1})
         if user and len(user.get('roles', [])) == 0:
-            # If no roles left, set the user status to "inactive"
             mongo.db.users.update_one({'_id': userObjectId}, {'$set': {'status': 'inactive'}})
             return jsonify({'message': 'Role(s) removed and user set to inactive due to no roles'}), 200
         return jsonify({'message': 'Role(s) removed successfully'}), 200
