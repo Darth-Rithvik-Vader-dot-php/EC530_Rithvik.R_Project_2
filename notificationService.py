@@ -8,13 +8,13 @@ from bson.objectid import ObjectId
 
 app = Flask(__name__)
 
-# MongoDB setup
-app.config["MONGO_URI"] = "mongodb+srv://visaaln2:visaal456@ec530.qevqtrc.mongodb.net/healthmonitoring?retryWrites=true&w=majority"
-mongo_client = MongoClient('mongodb+srv://visaaln2:visaal456@ec530.qevqtrc.mongodb.net/healthmonitoring?retryWrites=true&w=majority')
+# MongoDB Setup Carryout
+app.config["MONGO_URI"] = "mongodb+srv://rithvikr88:rithvikr@ec530.qevqtrc.mongodb.net/healthmonitoring?retryWrites=true&w=majority"
+mongo_client = MongoClient('mongodb+srv://rithvikr88:rithvikr@ec530.qevqtrc.mongodb.net/healthmonitoring?retryWrites=true&w=majority')
 db = mongo_client.medicalDatabase
 
 
-# RQ setup
+# RQ Setup Carryout
 redis_conn = Redis()
 queue = Queue(connection=redis_conn)
 scheduler = Scheduler(queue=queue, connection=redis_conn)
@@ -22,7 +22,6 @@ scheduler = Scheduler(queue=queue, connection=redis_conn)
 
 def get_patients_with_devices():
     """Fetch patients with devices."""
-    # Assuming 'patients' is your collection name
     patients = db.patients.find({})
     return list(patients)
 
@@ -37,8 +36,6 @@ def has_updated_reading_today(patient):
 
 def notify_patient_and_doctor(patient):
     """Placeholder function to send notifications to patient and doctor."""
-    # Implement your notification logic here
-    # This could be an email, SMS, or any other type of notification
     print(f"Sending notification for patient {patient['name']}")
 
 def check_and_notify():
@@ -54,7 +51,7 @@ def schedule_daily_checks():
     scheduler.schedule(
         scheduled_time=datetime.now(),  # Start time for the first job, adjust as needed
         func=check_and_notify,
-        interval=86400,  # Schedule daily, 86400 seconds in a day
+        interval=86000,  # Schedule daily, 86000 seconds in a day
     )
 
 @app.route('/start_checks')
